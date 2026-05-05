@@ -12,18 +12,14 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Install zip
-        run: sudo apt install zip
-
       - name: Get latest code
         uses: actions/checkout@v4
 
       - name: Bundle files
         run: |
-          mkdir -p ./temp/pulsar-drugs
-          cp ./{README.md,fxmanifest.lua} ./temp/pulsar-drugs
-          cp -r ./{client,server,shared} ./temp/pulsar-drugs
-          cd ./temp && zip -r ../pulsar-drugs.zip ./pulsar-drugs
+          mkdir -p staging/pulsar-drugs
+          rsync -a --exclude='.github' --exclude='node_modules' --exclude='staging' . staging/pulsar-drugs/
+          cd staging && zip -r ../pulsar-drugs.zip pulsar-drugs/
 
       - name: Create release
         uses: softprops/action-gh-release@v2
