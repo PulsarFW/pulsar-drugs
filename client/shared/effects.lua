@@ -24,7 +24,7 @@ RegisterNetEvent("Drugs:Effects:RunSpeed", function(quality)
 	SetSwimMultiplierForPlayer(pId, total)
 
 	StatSetInt(`MP0_STAMINA`, 100, true)
-	exports['pulsar-hud']:ApplyUniqueBuff("speed", _runSpeedTime, false)
+	exports['pulsar-hud']:ApplyBuff("speed", _runSpeedTime, false)
 	while _runSpeedTime > 0 and not LocalPlayer.state.isDead do
 		total = 1.0 + (speedMod * (1.0 - (loops / 100)))
 
@@ -39,7 +39,7 @@ RegisterNetEvent("Drugs:Effects:RunSpeed", function(quality)
 			SetPedToRagdoll(ped, math.random(5), math.random(5), 3, 0, 0, 0)
 		end
 	end
-	exports['pulsar-hud']:RemoveBuffType("speed")
+	exports['pulsar-hud']:RemoveBuff("speed")
 	StopScreenEffect("DrugsMichaelAliensFight")
 	_runSpeedTime = 0
 	SetRunSprintMultiplierForPlayer(pId, 1.0)
@@ -85,7 +85,7 @@ RegisterNetEvent("Drugs:Effects:Armor", function(quality)
 	_armorTime = (drugEffectQualityMulti * 6) * (1.0 - (addiction / 100))
 
 	local loops = 0
-	exports['pulsar-hud']:ApplyUniqueBuff("armor", _armorTime, false)
+	exports['pulsar-hud']:ApplyBuff("armor", _armorTime, false)
 	while _armorTime > 0 and not LocalPlayer.state.isDead do
 		loops = loops + 1
 		Wait(1000)
@@ -99,7 +99,7 @@ RegisterNetEvent("Drugs:Effects:Armor", function(quality)
 		end
 	end
 	_armorTime = 0
-	exports['pulsar-hud']:RemoveBuffType("armor")
+	exports['pulsar-hud']:RemoveBuff("armor")
 end)
 
 local _healTime = 0
@@ -138,7 +138,7 @@ RegisterNetEvent("Drugs:Effects:Heal", function(quality)
 	exports['pulsar-status']:Add("PLAYER_DRUNK", math.ceil(10 * (1.0 + (drugEffectQuality / 100))))
 	_healTime = math.ceil(30 * (1.0 + (drugEffectQuality / 100)) * (1.0 - (addiction / 100)))
 	local loops = 0
-	exports['pulsar-hud']:ApplyUniqueBuff("heal", _healTime, false)
+	exports['pulsar-hud']:ApplyBuff("heal", _healTime, false)
 	while _healTime > 0 and not LocalPlayer.state.isDead do
 		local ped = PlayerPedId()
 		loops = loops + 1
@@ -156,7 +156,7 @@ RegisterNetEvent("Drugs:Effects:Heal", function(quality)
 		end
 	end
 	_healTime = 0
-	exports['pulsar-hud']:RemoveBuffType("heal")
+	exports['pulsar-hud']:RemoveBuff("heal")
 end)
 
 -- Recipe-based moonshine effects
@@ -206,7 +206,7 @@ RegisterNetEvent("Drugs:Effects:Moonshine", function(quality, recipeId)
 	_healTime = math.ceil(effects.healDuration * qualityMultiplier * (1.0 - (addiction / 100)))
 	local healAmount = math.floor(effects.healAmount * qualityMultiplier)
 	
-	exports['pulsar-hud']:ApplyUniqueBuff("heal", _healTime, false)
+	exports['pulsar-hud']:ApplyBuff("heal", _healTime, false)
 	
 	-- Show notification with recipe name
 	local recipeLabel = recipe.label or "Moonshine"
@@ -228,7 +228,7 @@ RegisterNetEvent("Drugs:Effects:Moonshine", function(quality, recipeId)
 		end
 	end
 	_healTime = 0
-	exports['pulsar-hud']:RemoveBuffType("heal")
+	exports['pulsar-hud']:RemoveBuff("heal")
 end)
 
 RegisterNetEvent("Characters:Client:Spawned", function()
@@ -241,8 +241,8 @@ RegisterNetEvent("Characters:Client:Logout", function()
 	_armorTime = 0
 	_runSpeedTime = 0
 
-	exports['pulsar-hud']:RemoveBuffType("speed")
-	exports['pulsar-hud']:RemoveBuffType("armor")
+	exports['pulsar-hud']:RemoveBuff("speed")
+	exports['pulsar-hud']:RemoveBuff("armor")
 end)
 
 AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacker, pWeapon, isMelee)
@@ -250,11 +250,11 @@ AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacke
 
 	if _armorTime > 0 and not Config.Weapons[pWeapon]?.isMinor then
 		_armorTime = 0
-		exports['pulsar-hud']:RemoveBuffType("armor")
+		exports['pulsar-hud']:RemoveBuff("armor")
 	end
 
 	if _healTime > 0 and not Config.Weapons[pWeapon]?.isMinor then
 		_healTime = 0
-		exports['pulsar-hud']:RemoveBuffType("heal")
+		exports['pulsar-hud']:RemoveBuff("heal")
 	end
 end)
