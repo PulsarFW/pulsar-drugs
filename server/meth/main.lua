@@ -195,7 +195,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                 if exports['pulsar-drugs']:MethIsTablePlaced(data) then
                     local tableData = exports['pulsar-drugs']:MethGetTable(data)
                     if exports['pulsar-drugs']:MethRemovePlacedTable(data) then
-                        if exports.ox_inventory:AddItem(char:GetData("SID"), "meth_table", 1, { MethTable = data }, 1, false, false, false, false, false, tableData.created, false) then
+                        if exports.ox_inventory:AddItem(source, "meth_table", 1, { MethTable = data }, 1, false, false, false, false, false, tableData.created, false) then
                             cb(true)
                         else
                             cb(false)
@@ -278,7 +278,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                             _tableTiers[tableData.tier].cookTimeMax
                         local calc = total * cookPct
 
-                        if exports.ox_inventory:AddItem(char:GetData("SID"), "meth_brick", 1, {}, 1, false, false, false, false, false, false, math.floor(100 - total)) then
+                        if exports.ox_inventory:AddItem(source, "meth_brick", 1, {}, 1, false, false, false, false, false, false, math.floor(100 - total)) then
                             exports['pulsar-drugs']:MethFinishTableCook(data)
                         end
                     else
@@ -387,9 +387,9 @@ AddEventHandler("Drugs:Server:Startup", function()
                 if exports['pulsar-finance']:CryptoExchangeRemove(v.coin, char:GetData("CryptoWallet"), v.price) then
                     if v.item == "meth_table" then
                         local tableId = exports['pulsar-drugs']:MethGenerateTable(1)
-                        exports.ox_inventory:AddItem(char:GetData("SID"), v.item, 1, { MethTable = tableId }, 1)
+                        exports.ox_inventory:AddItem(source, v.item, 1, { MethTable = tableId }, 1)
                     else
-                        exports.ox_inventory:AddItem(char:GetData("SID"), v.item, 1, {}, 1)
+                        exports.ox_inventory:AddItem(source, v.item, 1, {}, 1)
                     end
                     _toolsForSale[v.item][char:GetData("SID")] = true
                 else

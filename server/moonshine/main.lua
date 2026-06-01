@@ -703,7 +703,7 @@ AddEventHandler("Drugs:Server:Startup", function()
                         -- Add reputation for successful brew
                         AddMoonshineRep(source, _reputationSystem.repPerBrew)
                         
-                        if exports.ox_inventory:AddItem(char:GetData("SID"), "moonshine_barrel", 1, {
+                        if exports.ox_inventory:AddItem(source, "moonshine_barrel", 1, {
                                 Brew = {
                                     Quality = cookData.quality,
                                     Drinks = drinks,
