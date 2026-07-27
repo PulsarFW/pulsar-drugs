@@ -14,7 +14,7 @@ local function RunSkillChecks(total)
 
     for i = 1, total do
         local p = promise.new()
-        exports['pulsar-games']:MinigamePlayRoundSkillbar(1.15, 3, {
+        plsr.Minigame.Play:RoundSkillbar(1.15, 3, {
             onSuccess = function()
                 success += 1
                 Wait(50)
@@ -51,141 +51,110 @@ end
 
 AddEventHandler("Drugs:Client:Startup", function()
     for k, v in ipairs(_stillModels) do
-        exports.ox_target:addModel(v, {
+        plsr.Targeting:AddObject(v, "kitchen-set", {
             {
-                label = "Dismantle Still (Destroys Still)",
-                icon = "fas fa-hand",
+                text = "Dismantle Still (Destroys Still)",
+                icon = "hand",
                 event = "Drugs:Client:Moonshine:PickupStill",
-                distance = 3.0,
-                canInteract = function(entity)
-                    local entState = Entity(entity).state
-                    return entState?.isMoonshineStill and
-                        (LocalPlayer.state.onDuty == "police" or _barrels[entState?.stillId]?.owner == LocalPlayer.state.Character:GetData("SID"))
+                minDist = 3.0,
+                isEnabled = function(data, entity)
+                    local entState = Entity(entity.entity).state
+                    return entState?.isMoonshineStill and (plsr.State.flags.onDuty == "police" or _barrels[entState?.stillId]?.owner == plsr.State.character.SID)
                 end,
             },
             {
-                label = "Still Info",
-                icon = "fas fa-info",
+                text = "Still Info",
+                icon = "circle-info",
                 event = "Drugs:Client:Moonshine:StillDetails",
-                distance = 3.0,
-                canInteract = function(entity)
-                    return Entity(entity).state?.isMoonshineStill
+                minDist = 3.0,
+                isEnabled = function(data, entity)
+                    return Entity(entity.entity).state?.isMoonshineStill
                 end,
             },
             {
-                label = "Upgrade Still",
-                icon = "fas fa-wrench",
+                text = "Upgrade Still",
+                icon = "wrench",
                 event = "Drugs:Client:Moonshine:UpgradeStill",
-                distance = 3.0,
-                canInteract = function(entity)
-                    local entState = Entity(entity).state
-                    return entState?.isMoonshineStill and
-                        (_stills[entState.stillId]?.owner == nil or _stills[entState.stillId]?.owner == LocalPlayer.state.Character:GetData("SID"))
+                minDist = 3.0,
+                isEnabled = function(data, entity)
+                    local entState = Entity(entity.entity).state
+                    return entState?.isMoonshineStill and (_stills[entState.stillId]?.owner == nil or _stills[entState.stillId]?.owner == plsr.State.character.SID)
                 end,
             },
             {
-                label = "Start Brewing",
-                icon = "fas fa-clock",
+                text = "Start Brewing",
+                icon = "timer",
                 event = "Drugs:Client:Moonshine:StartCook",
-                distance = 3.0,
-                canInteract = function(entity)
-                    local entState = Entity(entity).state
-                    return entState?.isMoonshineStill and
-                        not _stills[entState.stillId]?.activeBrew and
-                        (not _stills[entState.stillId]?.cooldown or GetCloudTimeAsInt() > _stills[entState.stillId]?.cooldown) and
-                        (_stills[entState.stillId]?.owner == nil or _stills[entState.stillId]?.owner == LocalPlayer.state.Character:GetData("SID"))
+                minDist = 3.0,
+                isEnabled = function(data, entity)
+                    local entState = Entity(entity.entity).state
+                    return entState?.isMoonshineStill and not _stills[entState.stillId]?.activeBrew and (not _stills[entState.stillId]?.cooldown or GetCloudTimeAsInt() > _stills[entState.stillId]?.cooldown) and (_stills[entState.stillId].owner == nil or _stills[entState.stillId].owner == plsr.State.character.SID)
                 end,
             },
             {
-                label = "Collect Brew",
-                icon = "fas fa-box",
+                text = "Collect Brew",
+                icon = "block",
                 event = "Drugs:Client:Moonshine:PickupCook",
-                distance = 3.0,
-                canInteract = function(entity)
-                    local entState = Entity(entity).state
-                    return entState?.isMoonshineStill and _stills[entState.stillId]?.activeBrew and
-                        _stills[entState.stillId]?.pickupReady and
-                        (_stills[entState.stillId]?.owner == nil or _stills[entState.stillId]?.owner == LocalPlayer.state.Character:GetData("SID"))
+                minDist = 3.0,
+                isEnabled = function(data, entity)
+                    local entState = Entity(entity.entity).state
+                    return entState?.isMoonshineStill and _stills[entState.stillId]?.activeBrew and _stills[entState.stillId]?.pickupReady and (_stills[entState.stillId]?.owner == nil or _stills[entState.stillId]?.owner == plsr.State.character.SID)
                 end,
             },
-        })
+        }, 3.0)
     end
 
     for k, v in ipairs(_barrelModels) do
-        exports.ox_target:addModel(v, {
+        plsr.Targeting:AddObject(v, "prescription-bottle", {
             {
-                label = "Destroy Barrel",
-                icon = "fas fa-hand",
+                text = "Destroy Barrel",
+                icon = "hand",
                 event = "Drugs:Client:Moonshine:PickupBarrel",
-                distance = 3.0,
-                canInteract = function(entity)
-                    local entState = Entity(entity).state
-                    return entState?.isMoonshineBarrel and
-                        (LocalPlayer.state.onDuty == "police" or _barrels[entState?.barrelId]?.owner == LocalPlayer.state.Character:GetData("SID"))
+                minDist = 3.0,
+                isEnabled = function(data, entity)
+                    local entState = Entity(entity.entity).state
+                    return entState?.isMoonshineBarrel and (plsr.State.flags.onDuty == "police" or _barrels[entState?.barrelId]?.owner == plsr.State.character.SID)
                 end,
             },
             {
-                label = "Barrel Info",
-                icon = "fas fa-info",
+                text = "Barrel Info",
+                icon = "block",
                 event = "Drugs:Client:Moonshine:BarrelDetails",
-                distance = 3.0,
-                canInteract = function(entity)
-                    return Entity(entity).state?.isMoonshineBarrel
+                minDist = 3.0,
+                isEnabled = function(data, entity)
+                    return Entity(entity.entity).state?.isMoonshineBarrel
                 end,
             },
             {
-                label = "Fill Jars",
-                icon = "fas fa-box",
-                event = "Drugs:Client:Moonshine:PickupBrew", 
-                distance = 3.0,
-                canInteract = function(entity)
-                    if not entity then
-                        return false
-                    end
-                    local entState = Entity(entity).state
-                    if not entState or not entState.isMoonshineBarrel then
-                        return false
-                    end
-                    -- Convert barrelId to number to ensure proper lookup
-                    local barrelId = tonumber(entState.barrelId)
-                    if not barrelId then
-                        return false
-                    end
-                    local barrel = _barrels[barrelId]
-                    if not barrel then
-                        return false
-                    end
-                    -- Check if barrel is ready
-                    if not barrel.pickupReady then
-                        return false
-                    end
-                    -- Check ownership
-                    local char = LocalPlayer.state.Character
-                    if not char then
-                        return false
-                    end
-                    local sid = char:GetData("SID")
-                    return barrel.owner == nil or barrel.owner == tostring(sid)
+                text = "Fill Jars",
+                textFunc = function(data, entity)
+                    local entState = Entity(entity.entity).state
+                    return string.format("Fill Jars (Requires %s Empty Jars)", (_barrels[entState.barrelId]?.brewData?.Drinks or 15))
+                end,
+                icon = "block",
+                event = "Drugs:Client:Moonshine:PickupBrew",
+                minDist = 3.0,
+                isEnabled = function(data, entity)
+                    local entState = Entity(entity.entity).state
+                    return entState?.isMoonshineBarrel and _barrels[entState.barrelId]?.pickupReady and (_barrels[entState.barrelId]?.owner == nil or _barrels[entState.barrelId]?.owner == plsr.State.character.SID)
                 end,
             },
-        })
+        }, 3.0)
     end
 
-    exports["pulsar-core"]:RegisterClientCallback("Drugs:Moonshine:PlaceStill", function(data, cb)
-        exports['pulsar-objects']:PlacerStart(`prop_still`, "Drugs:Client:Moonshine:FinishPlacement", data, 2)
+    plsr.Callbacks:RegisterClientCallback("Drugs:Moonshine:PlaceStill", function(data, cb)
+        plsr.ObjectPlacer:Start(`prop_still`, "Drugs:Client:Moonshine:FinishPlacement", data, 2)
         cb()
     end)
 
-    exports["pulsar-core"]:RegisterClientCallback("Drugs:Moonshine:PlaceBarrel", function(data, cb)
-        exports['pulsar-objects']:PlacerStart(`prop_wooden_barrel`, "Drugs:Client:Moonshine:FinishPlacementBarrel", data,
-            2)
+    plsr.Callbacks:RegisterClientCallback("Drugs:Moonshine:PlaceBarrel", function(data, cb)
+        plsr.ObjectPlacer:Start(`prop_wooden_barrel`, "Drugs:Client:Moonshine:FinishPlacementBarrel", data, 2)
         cb()
     end)
 
-    exports["pulsar-core"]:RegisterClientCallback("Drugs:Moonshine:Use", function(data, cb)
-        -- data should be { quality = number, recipeId = string }
+    plsr.Callbacks:RegisterClientCallback("Drugs:Moonshine:Use", function(data, cb)
         Wait(400)
-        exports['pulsar-games']:MinigamePlayRoundSkillbar(0.8, 8, {
+        plsr.Minigame.Play:RoundSkillbar(0.8, 8, {
             onSuccess = function()
                 cb(true)
             end,
@@ -207,10 +176,10 @@ AddEventHandler("Drugs:Client:Startup", function()
                 flags = 48,
             },
             prop = {
-                model = "prop_beer_bottle",
-                bone = 28422,
-                coords = { x = 0.0, y = 0.0, z = -0.15 },
-                rotation = { x = 0.0, y = 0.0, z = 0.0 },
+            	model = "prop_beer_bottle",
+            	bone = 28422,
+            	coords = { x = 0.0, y = 0.0, z = -0.15 },
+            	rotation = { x = 0.0, y = 0.0, z = 0.0 },
             },
         })
     end)
@@ -313,9 +282,9 @@ RegisterNetEvent("Drugs:Client:Moonshine:UpdateStillData", function(stillId, dat
 end)
 
 AddEventHandler("Drugs:Client:Moonshine:FinishPlacement", function(data, endCoords)
-    TaskTurnPedToFaceCoord(LocalPlayer.state.ped, endCoords.coords.x, endCoords.coords.y, endCoords.coords.z, 0.0)
+    TaskTurnPedToFaceCoord(PlayerPedId(), endCoords.coords.x, endCoords.coords.y, endCoords.coords.z, 0.0)
     Wait(1000)
-    exports['pulsar-hud']:Progress({
+    plsr.Progress:Progress({
         name = "meth_pickup",
         duration = (math.random(5) + 10) * 1000,
         label = "Placing",
@@ -333,7 +302,7 @@ AddEventHandler("Drugs:Client:Moonshine:FinishPlacement", function(data, endCoor
         },
     }, function(status)
         if not status then
-            exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:FinishStillPlacement", {
+            plsr.Callbacks:ServerCallback("Drugs:Moonshine:FinishStillPlacement", {
                 data = data,
                 endCoords = endCoords
             }, function(s)
@@ -344,9 +313,9 @@ AddEventHandler("Drugs:Client:Moonshine:FinishPlacement", function(data, endCoor
 end)
 
 AddEventHandler("Drugs:Client:Moonshine:FinishPlacementBarrel", function(data, endCoords)
-    TaskTurnPedToFaceCoord(LocalPlayer.state.ped, endCoords.coords.x, endCoords.coords.y, endCoords.coords.z, 0.0)
+    TaskTurnPedToFaceCoord(PlayerPedId(), endCoords.coords.x, endCoords.coords.y, endCoords.coords.z, 0.0)
     Wait(1000)
-    exports['pulsar-hud']:Progress({
+    plsr.Progress:Progress({
         name = "meth_pickup",
         duration = 3 * 1000,
         label = "Placing",
@@ -364,7 +333,7 @@ AddEventHandler("Drugs:Client:Moonshine:FinishPlacementBarrel", function(data, e
         },
     }, function(status)
         if not status then
-            exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:FinishBarrelPlacement", {
+            plsr.Callbacks:ServerCallback("Drugs:Moonshine:FinishBarrelPlacement", {
                 data = data,
                 endCoords = endCoords
             }, function(s)
@@ -376,7 +345,7 @@ end)
 
 AddEventHandler("Drugs:Client:Moonshine:PickupStill", function(entity, data)
     if Entity(entity.entity).state?.isMoonshineStill then
-        exports['pulsar-hud']:Progress({
+        plsr.Progress:Progress({
             name = "meth_pickup",
             duration = (math.random(5) + 15) * 1000,
             label = "Picking Up Still",
@@ -394,90 +363,75 @@ AddEventHandler("Drugs:Client:Moonshine:PickupStill", function(entity, data)
             },
         }, function(status)
             if not status then
-                exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:PickupStill", Entity(entity.entity).state
-                    .stillId, function(s)
-                        -- if s then
-                        --     DeleteObject(entity.entity)
-                        -- end
-                    end)
+                plsr.Callbacks:ServerCallback("Drugs:Moonshine:PickupStill", Entity(entity.entity).state.stillId, function(s)
+                end)
             end
         end)
     end
 end)
 
--- Store recipe selection data
+-- holds the recipe list + chosen still between StartCook (open menu) and SelectRecipe (fired by the menu)
 local _recipeSelectionData = {}
 
 AddEventHandler("Drugs:Client:Moonshine:StartCook", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMoonshineStill and entState.stillId then
-        exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:CheckStill", entState.stillId, function(s)
-            if s then
-                -- Get still data to store tier
-                local stillId = entState.stillId
-                local still = _stills[stillId]
-                local stillTier = 1
-                
-                if still and still.tier then
-                    stillTier = still.tier
-                end
-                
-                -- Get available recipes
-                exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:GetRecipes", {}, function(recipeData)
-                    if not recipeData then
-                        exports["pulsar-hud"]:Notification("error", "Failed to load recipes")
-                        return
-                    end
-                    
-                    -- Store data for event handler (including tier)
-                    _recipeSelectionData.stillId = stillId
-                    _recipeSelectionData.stillTier = stillTier
-                    _recipeSelectionData.recipes = recipeData.recipes
-                    
-                    -- Show recipe selection menu
-                    local menuItems = {}
-                    for k, recipe in ipairs(recipeData.recipes) do
-                        local ingredientText = ""
-                        for i, ing in ipairs(recipe.ingredients) do
-                            ingredientText = ingredientText .. string.format("%d %s", ing.amount, ing.item)
-                            if i < #recipe.ingredients then
-                                ingredientText = ingredientText .. ", "
-                            end
-                        end
-                        
-                        table.insert(menuItems, {
-                            label = recipe.unlocked and recipe.label or (recipe.label .. " (Locked)"),
-                            description = recipe.unlocked and 
-                                string.format("%s\nIngredients: %s\nBase Quality: %d", recipe.description, ingredientText, recipe.baseQuality) or
-                                string.format("Requires %d reputation", recipe.requiredRep),
-                            event = "Drugs:Client:Moonshine:SelectRecipe",
-                            data = {
-                                recipeId = recipe.id,
-                            },
-                            disabled = not recipe.unlocked,
-                        })
-                    end
-                    
-                    exports['pulsar-hud']:ListMenuShow({
-                        main = {
-                            label = "Select Recipe",
-                            items = menuItems
-                        }
-                    })
-                end)
-            else
-                exports["pulsar-hud"]:Notification("error", "Still Is Not Ready")
+        plsr.Callbacks:ServerCallback("Drugs:Moonshine:CheckStill", entState.stillId, function(s)
+            if not s then
+                plsr.Notification:Error("Still Is Not Ready")
+                return
             end
+
+            local stillId = entState.stillId
+            local stillTier = _stills[stillId]?.tier or 1
+
+            plsr.Callbacks:ServerCallback("Drugs:Moonshine:GetRecipes", {}, function(recipeData)
+                if not recipeData then
+                    plsr.Notification:Error("Failed To Load Recipes")
+                    return
+                end
+
+                _recipeSelectionData.stillId = stillId
+                _recipeSelectionData.stillTier = stillTier
+                _recipeSelectionData.recipes = recipeData.recipes
+
+                local menuItems = {}
+                for k, recipe in ipairs(recipeData.recipes) do
+                    local ingredientText = ""
+                    for i, ing in ipairs(recipe.ingredients) do
+                        ingredientText = ingredientText .. string.format("%d %s", ing.amount, ing.item)
+                        if i < #recipe.ingredients then
+                            ingredientText = ingredientText .. ", "
+                        end
+                    end
+
+                    table.insert(menuItems, {
+                        label = recipe.unlocked and recipe.label or (recipe.label .. " (Locked)"),
+                        description = recipe.unlocked
+                            and string.format("%s\nIngredients: %s\nBase Quality: %d", recipe.description, ingredientText, recipe.baseQuality)
+                            or string.format("Requires %d Reputation", recipe.requiredRep),
+                        event = "Drugs:Client:Moonshine:SelectRecipe",
+                        data = { recipeId = recipe.id },
+                        disabled = not recipe.unlocked,
+                    })
+                end
+
+                plsr.ListMenu:Show({
+                    main = {
+                        label = "Select Recipe",
+                        items = menuItems,
+                    },
+                })
+            end)
         end)
     end
 end)
 
--- Handle recipe selection
 AddEventHandler("Drugs:Client:Moonshine:SelectRecipe", function(data)
     if not data or not data.recipeId or not _recipeSelectionData.stillId then
         return
     end
-    
+
     local selectedRecipe = nil
     for k, recipe in ipairs(_recipeSelectionData.recipes) do
         if recipe.id == data.recipeId then
@@ -485,51 +439,15 @@ AddEventHandler("Drugs:Client:Moonshine:SelectRecipe", function(data)
             break
         end
     end
-    
+
     if not selectedRecipe or not selectedRecipe.unlocked then
-        exports["pulsar-hud"]:Notification("error", "Recipe is locked or invalid")
+        plsr.Notification:Error("Recipe Is Locked Or Invalid")
         return
     end
-    
-    -- Use stored tier from when we started the cook
-    local stillTier = _recipeSelectionData.stillTier or 1
-    local tierData = _stillTiers[stillTier]
-    local checks = tierData and tierData.checks or 10
-    
-    -- Get temperature and weather (simplified - using time of day as temperature proxy)
-    local hour = GetClockHours()
-    local temperature = 20 -- Base temperature
-    if hour >= 6 and hour < 12 then
-        temperature = 15 + math.random(0, 10) -- Morning: 15-25
-    elseif hour >= 12 and hour < 18 then
-        temperature = 20 + math.random(0, 15) -- Afternoon: 20-35
-    elseif hour >= 18 and hour < 22 then
-        temperature = 15 + math.random(0, 10) -- Evening: 15-25
-    else
-        temperature = 5 + math.random(0, 10) -- Night: 5-15
-    end
-    
-    -- Get weather using export function
-    local currentWeather = exports["pulsar-sync"]:GetWeather() or "CLEAR"
-    local weatherName = "clear"
-    
-    -- Convert weather string to our config format
-    if currentWeather == "RAIN" then
-        weatherName = "rain"
-    elseif currentWeather == "THUNDER" then
-        weatherName = "thunder"
-    elseif currentWeather == "FOGGY" then
-        weatherName = "foggy"
-    elseif currentWeather == "CLOUDS" or currentWeather == "OVERCAST" or currentWeather == "CLEARING" then
-        weatherName = "clouds"
-    elseif currentWeather == "SNOW" or currentWeather == "SNOWLIGHT" or currentWeather == "BLIZZARD" or currentWeather == "XMAS" then
-        weatherName = "snow"
-    else
-        -- EXTRASUNNY, CLEAR, SMOG, etc. = clear
-        weatherName = "clear"
-    end
-    
-    exports['pulsar-hud']:Progress({
+
+    local checks = _stillTiers[_recipeSelectionData.stillTier]?.checks or 10
+
+    plsr.Progress:Progress({
         name = "moonshine_prepare",
         duration = 5 * 1000,
         label = "Preparing Ingredients",
@@ -546,57 +464,57 @@ AddEventHandler("Drugs:Client:Moonshine:SelectRecipe", function(data)
             anim = "dj",
         },
     }, function(status)
-        if not status then
-            local results = RunSkillChecks(checks)
-
-            LocalPlayer.state.doingAction = false
-
-            exports['pulsar-hud']:Progress({
-                name = "moonshine_finish",
-                duration = 2 * 1000,
-                label = "Starting Brew",
-                useWhileDead = false,
-                canCancel = false,
-                ignoreModifier = true,
-                controlDisables = {
-                    disableMovement = true,
-                    disableCarMovement = true,
-                    disableMouse = false,
-                    disableCombat = true,
-                },
-                animation = {
-                    anim = "dj",
-                },
-            }, function(status)
-                if not status then
-                    exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:StartCooking", {
-                        stillId = _recipeSelectionData.stillId,
-                        recipeId = selectedRecipe.id,
-                        results = results,
-                        temperature = temperature,
-                        weather = weatherName,
-                    }, function(success)
-                        if success then
-                            exports["pulsar-hud"]:Notification("success", "Brew started successfully!")
-                            -- Clear selection data after successful start
-                            _recipeSelectionData = {}
-                        else
-                            exports["pulsar-hud"]:Notification("error", "Failed to start brew. Check your ingredients and still status.")
-                        end
-                    end)
-                else
-                    -- User cancelled, clear selection data
-                    _recipeSelectionData = {}
-                end
-            end)
+        if status then
+            _recipeSelectionData = {}
+            return
         end
+
+        local results = RunSkillChecks(checks)
+
+        plsr.State.flags.doingAction = false
+
+        plsr.Progress:Progress({
+            name = "moonshine_finish",
+            duration = 2 * 1000,
+            label = "Starting Brew",
+            useWhileDead = false,
+            canCancel = false,
+            ignoreModifier = true,
+            controlDisables = {
+                disableMovement = true,
+                disableCarMovement = true,
+                disableMouse = false,
+                disableCombat = true,
+            },
+            animation = {
+                anim = "dj",
+            },
+        }, function(finishStatus)
+            if finishStatus then
+                _recipeSelectionData = {}
+                return
+            end
+
+            plsr.Callbacks:ServerCallback("Drugs:Moonshine:StartCooking", {
+                stillId = _recipeSelectionData.stillId,
+                recipeId = selectedRecipe.id,
+                results = results,
+            }, function(success)
+                if success then
+                    plsr.Notification:Success("Brew Started Successfully!")
+                else
+                    plsr.Notification:Error("Failed To Start Brew, Check Your Ingredients And Still Status")
+                end
+                _recipeSelectionData = {}
+            end)
+        end)
     end)
 end)
 
 AddEventHandler("Drugs:Client:Moonshine:PickupCook", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMoonshineStill and entState.stillId then
-        exports['pulsar-hud']:Progress({
+        plsr.Progress:Progress({
             name = "meth_pickup",
             duration = 5 * 1000,
             label = "Emptying Still",
@@ -614,10 +532,9 @@ AddEventHandler("Drugs:Client:Moonshine:PickupCook", function(entity, data)
             },
         }, function(status)
             if not status then
-                exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:PickupCook", entState.stillId, function(s)
-                    if s then
-                    else
-                        exports["pulsar-hud"]:Notification("error", "Still Is Not Ready")
+                plsr.Callbacks:ServerCallback("Drugs:Moonshine:PickupCook", entState.stillId, function(s)
+                    if not s then
+                        plsr.Notification:Error("Still Is Not Ready")
                     end
                 end)
             end
@@ -625,58 +542,54 @@ AddEventHandler("Drugs:Client:Moonshine:PickupCook", function(entity, data)
     end
 end)
 
+AddEventHandler("Drugs:Client:Moonshine:UpgradeStill", function(entity, data)
+    local entState = Entity(entity.entity).state
+    if entState.isMoonshineStill and entState.stillId then
+        plsr.Callbacks:ServerCallback("Drugs:Moonshine:UpgradeStill", entState.stillId, function(success)
+            if success then
+                plsr.Notification:Success("Still Upgraded Successfully!")
+            end
+        end)
+    end
+end)
+
 AddEventHandler("Drugs:Client:Moonshine:PickupBrew", function(entity, data)
     local entState = Entity(entity.entity).state
-    if not entState.isMoonshineBarrel or not entState.barrelId then
-        return
-    end
-    
-    -- Convert barrelId to number for proper lookup
-    local barrelId = tonumber(entState.barrelId)
-    if not barrelId then
-        return
-    end
-    
-    local barrel = _barrels[barrelId]
-    if not barrel then
-        return
-    end
-    
-    local requiredJars = barrel.brewData?.Drinks or 15
-    
-    -- Always show the progress bar, server will check for jars
-    exports['pulsar-hud']:Progress({
-        name = "meth_pickup",
-        duration = 5 * 1000,
-        label = "Emptying Barrel",
-        useWhileDead = false,
-        canCancel = true,
-        ignoreModifier = true,
-        controlDisables = {
-            disableMovement = true,
-            disableCarMovement = true,
-            disableMouse = false,
-            disableCombat = true,
-        },
-        animation = {
-            anim = "dj",
-        },
-    }, function(status)
-        if not status then
-            exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:PickupBrew", barrelId,
-                function(success)
-                    -- Server will handle notifications for missing jars
-                end)
+    if plsr.Inventory.Items:Has("moonshine_jar", (_barrels[entState.barrelId]?.brewData?.Drinks or 15), false) then
+        if entState.isMoonshineBarrel and entState.barrelId then
+            plsr.Progress:Progress({
+                name = "meth_pickup",
+                duration = 5 * 1000,
+                label = "Emptying Barrel",
+                useWhileDead = false,
+                canCancel = true,
+                ignoreModifier = true,
+                controlDisables = {
+                    disableMovement = true,
+                    disableCarMovement = true,
+                    disableMouse = false,
+                    disableCombat = true,
+                },
+                animation = {
+                    anim = "dj",
+                },
+            }, function(status)
+                if not status then
+                    plsr.Callbacks:ServerCallback("Drugs:Moonshine:PickupBrew", entState.barrelId, function(s) end)
+                end
+            end)
         end
-    end)
+    else
+        plsr.Notification:Error(string.format("Missing Empty Jars (Requires %s Empty Jars", (_barrels[entState.barrelId]?.brewData?.Drinks or 15)))
+    end
 end)
 
 AddEventHandler("Drugs:Client:Moonshine:StillDetails", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMoonshineStill and entState.stillId then
-        exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:GetStillDetails", entState.stillId, function(s)
+        plsr.Callbacks:ServerCallback("Drugs:Moonshine:GetStillDetails", entState.stillId, function(s)
             if s then
-                exports['pulsar-hud']:ListMenuShow(s)
+                plsr.ListMenu:Show(s)
             end
         end)
     end
@@ -690,8 +603,7 @@ RegisterNetEvent("Drugs:Client:Moonshine:CreateBarrel", function(barrel)
     CreateThread(function()
         loadModel(`prop_wooden_barrel`)
         _barrels[barrel.id] = barrel
-        local obj = CreateObject(`prop_wooden_barrel`, barrel.coords.x, barrel.coords.y, barrel.coords.z, false, true,
-            false)
+        local obj = CreateObject(`prop_wooden_barrel`, barrel.coords.x, barrel.coords.y, barrel.coords.z, false, true, false)
         SetEntityHeading(obj, barrel.heading)
         PlaceObjectOnGroundProperly(obj)
         while not DoesEntityExist(obj) do
@@ -720,7 +632,7 @@ end)
 
 AddEventHandler("Drugs:Client:Moonshine:PickupBarrel", function(entity, data)
     if Entity(entity.entity).state?.isMoonshineBarrel then
-        exports['pulsar-hud']:Progress({
+        plsr.Progress:Progress({
             name = "meth_pickup",
             duration = 8 * 1000,
             label = "Destroying",
@@ -738,13 +650,8 @@ AddEventHandler("Drugs:Client:Moonshine:PickupBarrel", function(entity, data)
             },
         }, function(status)
             if not status then
-                exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:PickupBarrel",
-                    Entity(entity.entity).state.barrelId,
-                    function(s)
-                        -- if s then
-                        --     DeleteObject(entity.entity)
-                        -- end
-                    end)
+                plsr.Callbacks:ServerCallback("Drugs:Moonshine:PickupBarrel", Entity(entity.entity).state.barrelId, function(s)
+                end)
             end
         end)
     end
@@ -753,247 +660,193 @@ end)
 AddEventHandler("Drugs:Client:Moonshine:BarrelDetails", function(entity, data)
     local entState = Entity(entity.entity).state
     if entState.isMoonshineBarrel and entState.barrelId then
-        exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:GetBarrelDetails", entState.barrelId, function(s)
+        plsr.Callbacks:ServerCallback("Drugs:Moonshine:GetBarrelDetails", entState.barrelId, function(s)
             if s then
-                exports['pulsar-hud']:ListMenuShow(s)
+                plsr.ListMenu:Show(s)
             end
         end)
     end
 end)
 
-AddEventHandler("Drugs:Client:Moonshine:UpgradeStill", function(entity, data)
-    local entState = Entity(entity.entity).state
-    if entState.isMoonshineStill and entState.stillId then
-        exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:UpgradeStill", entState.stillId, function(success)
-            if success then
-                exports["pulsar-hud"]:Notification("success", "Still upgraded successfully!")
-            end
-        end)
-    end
-end)
-
--- Police Alert Handler
+-- Police heat alert: draws a temporary blip for on-duty police within range of a hot still
 RegisterNetEvent("Drugs:Client:Moonshine:PoliceAlert", function(alertData)
-    if LocalPlayer.state.onDuty == "police" then
-        local playerCoords = GetEntityCoords(PlayerPedId())
-        local distance = #(vector3(alertData.coords.x, alertData.coords.y, alertData.coords.z) - playerCoords)
-        
-        if distance <= 100.0 then -- Detection radius
-            -- Create blip
-            local blip = AddBlipForCoord(alertData.coords.x, alertData.coords.y, alertData.coords.z)
-            SetBlipSprite(blip, 432)
-            SetBlipColour(blip, 1)
-            SetBlipScale(blip, 1.0)
-            BeginTextCommandSetBlipName("STRING")
-            AddTextComponentString("Suspicious Moonshine Activity")
-            EndTextCommandSetBlipName(blip)
-            
-            -- Remove blip after 5 minutes
-            SetTimeout(300000, function()
-                RemoveBlip(blip)
-            end)
-            
-            exports['pulsar-hud']:Notification("info", 
-                string.format("Moonshine activity detected! Heat: %d/100", alertData.heat))
-        end
+    if plsr.State.flags.onDuty ~= "police" then
+        return
     end
-end)
 
--- Delivery System
-CreateThread(function()
-    while true do
-        Wait(1000)
-        -- Check for delivery missions (could be triggered via command or phone app)
+    local playerCoords = GetEntityCoords(PlayerPedId())
+    local distance = #(vector3(alertData.coords.x, alertData.coords.y, alertData.coords.z) - playerCoords)
+    if distance > _policeDetection.detectionRadius then
+        return
     end
-end)
 
--- Command to start delivery
-RegisterCommand("moonshinedelivery", function()
-    exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:GetDelivery", {}, function(deliveryData)
-        if deliveryData then
-            -- Create waypoint
-            SetNewWaypoint(deliveryData.coords.x, deliveryData.coords.y)
-            exports["pulsar-hud"]:Notification("success", 
-                string.format("Delivery mission started! Payment: $%d | Time limit: %d minutes", 
-                    deliveryData.payment, deliveryData.timeLimit / 60))
-            
-            -- Create delivery marker
-            CreateThread(function()
-                local deliveryBlip = AddBlipForCoord(deliveryData.coords.x, deliveryData.coords.y, deliveryData.coords.z)
-                SetBlipSprite(deliveryBlip, 1)
-                SetBlipColour(deliveryBlip, 5)
-                SetBlipRoute(deliveryBlip, true)
-                BeginTextCommandSetBlipName("STRING")
-                AddTextComponentString("Moonshine Delivery")
-                EndTextCommandSetBlipName(deliveryBlip)
-                
-                while #(GetEntityCoords(PlayerPedId()) - deliveryData.coords) > 5.0 do
-                    Wait(1000)
-                end
-                
-                -- Complete delivery
-                exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:CompleteDelivery", deliveryData.id, function(success)
-                    if success then
-                        exports["pulsar-hud"]:Notification("success", "Delivery completed!")
-                    else
-                        exports["pulsar-hud"]:Notification("error", "Failed to complete delivery")
-                    end
-                    RemoveBlip(deliveryBlip)
-                end)
-            end)
-        else
-            exports["pulsar-hud"]:Notification("error", "Failed to start delivery mission")
-        end
+    local blip = AddBlipForCoord(alertData.coords.x, alertData.coords.y, alertData.coords.z)
+    SetBlipSprite(blip, 432)
+    SetBlipColour(blip, 1)
+    SetBlipScale(blip, 1.0)
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString("Suspicious Moonshine Activity")
+    EndTextCommandSetBlipName(blip)
+
+    SetTimeout(300000, function()
+        RemoveBlip(blip)
     end)
-end, false)
 
--- Create Moonshine Dealer Ped
-RegisterNetEvent("Drugs:Client:Moonshine:CreateDealer", function(data)
-    -- Remove old vendor ped if it exists
-    exports['pulsar-pedinteraction']:Remove("MoonshineSeller")
-    
-    exports['pulsar-pedinteraction']:Add(data.id, data.model, data.coords, data.heading, 50.0, {
-        {
-            icon = "fas fa-handshake",
-            text = "Talk to Dealer",
-            minDist = 2.0,
-            onSelect = function()
-                TriggerEvent("Drugs:Client:Moonshine:OpenDealerMenu")
-            end,
-        },
-    }, "fas fa-handshake", data.scenario or false, nil, nil)
+    plsr.Notification:Info(string.format("Moonshine Activity Detected! Heat: %d/100", alertData.heat))
 end)
 
--- Open Dealer Menu
+-- Dealer ped: sells finished moonshine (drop-off route / bulk sale / Cayo Perico), separate from
+-- the tool-shop vendor that sells stills/barrels
+RegisterNetEvent("Drugs:Client:Moonshine:CreateDealer", function(data)
+    plsr.PedInteraction:Add(data.id, data.model, data.coords, data.heading, 50.0, {
+        {
+            icon = "handshake",
+            text = "Talk To Dealer",
+            minDist = 2.0,
+            event = "Drugs:Client:Moonshine:OpenDealerMenu",
+        },
+    }, "handshake", data.scenario or false)
+end)
+
 RegisterNetEvent("Drugs:Client:Moonshine:OpenDealerMenu", function()
-    exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:GetDealerOptions", {}, function(options)
+    plsr.Callbacks:ServerCallback("Drugs:Moonshine:GetDealerOptions", {}, function(options)
         if not options then
             return
         end
-        
+
         local menuItems = {}
-        
-        -- Drop Off option
+
         if options.dropOff.available then
             table.insert(menuItems, {
                 label = options.dropOff.label,
                 description = options.dropOff.description,
                 event = "Drugs:Client:Moonshine:DealerDropOff",
-                data = {},
             })
         else
             table.insert(menuItems, {
                 label = options.dropOff.label .. " (Locked)",
-                description = string.format("Need %d reputation", _deliverySystem.minRep),
+                description = "Reputation too low",
                 disabled = true,
             })
         end
-        
-        -- Bulk Sale option
+
         if options.bulkSale.available then
             table.insert(menuItems, {
                 label = options.bulkSale.label,
                 description = options.bulkSale.description,
                 event = "Drugs:Client:Moonshine:DealerBulkSale",
-                data = {},
             })
         else
             table.insert(menuItems, {
                 label = options.bulkSale.label .. " (Locked)",
-                description = string.format("Need %d reputation", _deliverySystem.bulkSaleRep),
+                description = "Reputation too low",
                 disabled = true,
             })
         end
-        
-        -- Travel option
+
         if options.travel.available then
             table.insert(menuItems, {
                 label = options.travel.label,
                 description = options.travel.description,
                 event = "Drugs:Client:Moonshine:DealerTravel",
-                data = {},
             })
         else
             table.insert(menuItems, {
                 label = options.travel.label .. " (Locked)",
-                description = string.format("Need %d reputation", _deliverySystem.travelRep),
+                description = "Reputation too low",
                 disabled = true,
             })
         end
-        
-        exports['pulsar-hud']:ListMenuShow({
+
+        plsr.ListMenu:Show({
             main = {
                 label = "Moonshine Dealer",
-                items = menuItems
-            }
+                items = menuItems,
+            },
         })
     end)
 end)
 
--- Handle Drop Off
 local _activeDeliveryPeds = {}
 local _currentDelivery = nil
 
+local function StartDeliveryRoute(result, isTravel)
+    _currentDelivery = {
+        id = result.id,
+        stops = result.stops,
+        currentStop = 1,
+        timeLimit = result.timeLimit,
+        type = isTravel and "travel" or "dropoff",
+    }
+
+    TriggerEvent("Drugs:Client:Moonshine:GoToStop", 1)
+
+    plsr.Notification:Success(string.format("%s Started! %d Stops | Time Limit: %d Minutes",
+        isTravel and "Cayo Perico Delivery Route" or "Delivery Route", #result.stops, math.floor(result.timeLimit / 60)))
+end
+
 RegisterNetEvent("Drugs:Client:Moonshine:DealerDropOff", function()
-    exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:DealerDropOff", {}, function(result)
+    plsr.Callbacks:ServerCallback("Drugs:Moonshine:DealerDropOff", {}, function(result)
         if result and result.stops and #result.stops > 0 then
-            _currentDelivery = {
-                id = result.id,
-                stops = result.stops,
-                currentStop = 1,
-                timeLimit = result.timeLimit,
-            }
-            
-            -- Start first stop
-            TriggerEvent("Drugs:Client:Moonshine:GoToStop", 1)
-            
-            exports["pulsar-hud"]:Notification("success", 
-                string.format("Delivery route started! %d stops | Time limit: %d minutes", 
-                    #result.stops, math.floor(result.timeLimit / 60)))
+            StartDeliveryRoute(result, false)
         else
-            exports["pulsar-hud"]:Notification("error", "Failed to start drop off")
+            plsr.Notification:Error("Failed To Start Drop Off")
         end
     end)
 end)
 
--- Go to a specific stop
+RegisterNetEvent("Drugs:Client:Moonshine:DealerTravel", function()
+    plsr.Callbacks:ServerCallback("Drugs:Moonshine:DealerTravel", {}, function(result)
+        if result and result.stops and #result.stops > 0 then
+            StartDeliveryRoute(result, true)
+        else
+            plsr.Notification:Error("Failed To Start Travel Delivery")
+        end
+    end)
+end)
+
+RegisterNetEvent("Drugs:Client:Moonshine:DealerBulkSale", function()
+    plsr.Callbacks:ServerCallback("Drugs:Moonshine:DealerBulkSale", {}, function(success)
+        if not success then
+            plsr.Notification:Error("Failed To Complete Bulk Sale")
+        end
+    end)
+end)
+
 RegisterNetEvent("Drugs:Client:Moonshine:GoToStop", function(stopIndex)
     if not _currentDelivery or not _currentDelivery.stops[stopIndex] then
         return
     end
-    
+
     local stop = _currentDelivery.stops[stopIndex]
-    
-    -- Create waypoint and blip
+    local isTravel = _currentDelivery.type == "travel"
+
     SetNewWaypoint(stop.coords.x, stop.coords.y)
-    local deliveryBlip = AddBlipForCoord(stop.coords.x, stop.coords.y, stop.coords.z)
-    SetBlipSprite(deliveryBlip, 1)
-    -- Use orange color for travel (Cayo Perico), blue for drop-off
-    local blipColor = (_currentDelivery.type == "travel") and 46 or 5
-    SetBlipColour(deliveryBlip, blipColor)
-    SetBlipRoute(deliveryBlip, true)
-    SetBlipRouteColour(deliveryBlip, blipColor)
+    local blip = AddBlipForCoord(stop.coords.x, stop.coords.y, stop.coords.z)
+    SetBlipSprite(blip, 1)
+    local blipColor = isTravel and 46 or 5
+    SetBlipColour(blip, blipColor)
+    SetBlipRoute(blip, true)
+    SetBlipRouteColour(blip, blipColor)
     BeginTextCommandSetBlipName("STRING")
-    local blipName = (_currentDelivery.type == "travel") and "Cayo Perico Delivery" or "Moonshine Delivery"
-    AddTextComponentString(string.format("%s (Stop %d/%d)", blipName, stopIndex, #_currentDelivery.stops))
-    EndTextCommandSetBlipName(deliveryBlip)
-    
-    -- Spawn ped at location
-    local pedModels = {`a_m_m_hillbilly_01`, `a_m_m_hillbilly_02`, `a_m_y_hippy_01`, `a_m_y_hipster_02`, `a_m_m_tramp_01`}
+    AddTextComponentString(string.format("%s (Stop %d/%d)", isTravel and "Cayo Perico Delivery" or "Moonshine Delivery", stopIndex, #_currentDelivery.stops))
+    EndTextCommandSetBlipName(blip)
+
+    local pedModels = { `a_m_m_hillbilly_01`, `a_m_m_hillbilly_02`, `a_m_y_hippy_01`, `a_m_y_hipster_02`, `a_m_m_tramp_01` }
     local pedModel = pedModels[math.random(#pedModels)]
-    
+
     RequestModel(pedModel)
     local timeout = 0
     while not HasModelLoaded(pedModel) and timeout < 50 do
         Wait(100)
-        timeout = timeout + 1
+        timeout += 1
     end
-    
+
     if not HasModelLoaded(pedModel) then
-        exports["pulsar-hud"]:Notification("error", "Failed to load ped model")
+        plsr.Notification:Error("Failed To Load Ped Model")
         return
     end
-    
+
     local ped = CreatePed(4, pedModel, stop.coords.x, stop.coords.y, stop.coords.z, 0.0, false, true)
     SetEntityAsMissionEntity(ped, true, true)
     FreezeEntityPosition(ped, true)
@@ -1005,114 +858,62 @@ RegisterNetEvent("Drugs:Client:Moonshine:GoToStop", function(stopIndex)
     SetEntityInvincible(ped, true)
     SetPedDefaultComponentVariation(ped)
     SetModelAsNoLongerNeeded(pedModel)
-    
-    -- Add target option
-    exports.ox_target:addLocalEntity(ped, {
+
+    plsr.Targeting:AddEntity(ped, "handshake", {
         {
-            name = "moonshine_sell_ped",
-            icon = "fas fa-handshake",
-            label = "Sell Moonshine",
-            distance = 2.0,
-            onSelect = function()
-                TriggerEvent("Drugs:Client:Moonshine:SellToPed", stopIndex)
-            end,
+            text = "Sell Moonshine",
+            icon = "handshake",
+            event = "Drugs:Client:Moonshine:SellToPed",
+            data = { stopIndex = stopIndex },
+            minDist = 2.0,
         },
-    })
-    
-    _activeDeliveryPeds[stopIndex] = {
-        ped = ped,
-        blip = deliveryBlip,
-        model = pedModel,
-    }
+    }, 2.0)
+
+    _activeDeliveryPeds[stopIndex] = { ped = ped, blip = blip }
 end)
 
--- Sell to ped at stop
-RegisterNetEvent("Drugs:Client:Moonshine:SellToPed", function(stopIndex)
+AddEventHandler("Drugs:Client:Moonshine:SellToPed", function(entity, data)
     if not _currentDelivery then
         return
     end
-    
-    exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:SellToPed", {
+
+    local stopIndex = data.stopIndex
+
+    plsr.Callbacks:ServerCallback("Drugs:Moonshine:SellToPed", {
         deliveryId = _currentDelivery.id,
         stopIndex = stopIndex,
     }, function(result)
-        if result then
-            local pedData = _activeDeliveryPeds[stopIndex]
-            if pedData and pedData.ped and DoesEntityExist(pedData.ped) then
-                -- Make ped a normal NPC - remove special flags
-                FreezeEntityPosition(pedData.ped, false)
-                SetEntityInvincible(pedData.ped, false)
-                SetPedCanRagdoll(pedData.ped, true)
-                SetBlockingOfNonTemporaryEvents(pedData.ped, false)
-                TaskSetBlockingOfNonTemporaryEvents(pedData.ped, 0)
-                
-                -- Make them wander away
-                TaskWanderStandard(pedData.ped, 10.0, 10)
-                
-                -- Remove target option (they're now a normal NPC, let them roam free)
-                exports.ox_target:removeLocalEntity(pedData.ped)
-                
-                -- Don't delete them - they're now part of the world and will despawn naturally
-            end
-            
-            -- Remove blip
-            if pedData and pedData.blip then
-                RemoveBlip(pedData.blip)
-            end
-            
-            _activeDeliveryPeds[stopIndex] = nil
-            
-            if result.completed then
-                -- All stops done
-                local deliveryType = _currentDelivery and _currentDelivery.type == "travel" and "Cayo Perico delivery" or "Delivery route"
-                exports["pulsar-hud"]:Notification("success", 
-                    string.format("%s complete! Total payment: $%d", deliveryType, result.payment))
-                _currentDelivery = nil
-            else
-                -- Move to next stop
-                local repMsg = result.repGain and string.format(" | Rep +%d", result.repGain) or ""
-                exports["pulsar-hud"]:Notification("info", 
-                    string.format("Stop %d complete! Moving to next stop...%s", stopIndex, repMsg))
-                Wait(2000)
-                TriggerEvent("Drugs:Client:Moonshine:GoToStop", result.nextStop)
-            end
-        else
-            exports["pulsar-hud"]:Notification("error", "Failed to sell moonshine")
+        if not result then
+            plsr.Notification:Error("Failed To Sell Moonshine")
+            return
         end
-    end)
-end)
 
--- Handle Bulk Sale
-RegisterNetEvent("Drugs:Client:Moonshine:DealerBulkSale", function()
-    exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:DealerBulkSale", {}, function(success)
-        if success then
-            -- Already handled on server with notification
-        else
-            exports["pulsar-hud"]:Notification("error", "Failed to complete bulk sale")
+        local pedData = _activeDeliveryPeds[stopIndex]
+        if pedData and pedData.ped and DoesEntityExist(pedData.ped) then
+            FreezeEntityPosition(pedData.ped, false)
+            SetEntityInvincible(pedData.ped, false)
+            SetPedCanRagdoll(pedData.ped, true)
+            SetBlockingOfNonTemporaryEvents(pedData.ped, false)
+            TaskSetBlockingOfNonTemporaryEvents(pedData.ped, 0)
+            TaskWanderStandard(pedData.ped, 10.0, 10)
+            plsr.Targeting:RemoveEntity(pedData.ped)
         end
-    end)
-end)
 
--- Handle Travel (uses same system as drop-off but with Cayo Perico locations)
-RegisterNetEvent("Drugs:Client:Moonshine:DealerTravel", function()
-    exports["pulsar-core"]:ServerCallback("Drugs:Moonshine:DealerTravel", {}, function(result)
-        if result and result.stops and #result.stops > 0 then
-            _currentDelivery = {
-                id = result.id,
-                stops = result.stops,
-                currentStop = 1,
-                timeLimit = result.timeLimit,
-                type = "travel",
-            }
-            
-            -- Start first stop
-            TriggerEvent("Drugs:Client:Moonshine:GoToStop", 1)
-            
-            exports["pulsar-hud"]:Notification("success",
-                string.format("Cayo Perico delivery route started! %d stops | Time limit: %d minutes",
-                    #result.stops, math.floor(result.timeLimit / 60)))
+        if pedData and pedData.blip then
+            RemoveBlip(pedData.blip)
+        end
+
+        _activeDeliveryPeds[stopIndex] = nil
+
+        if result.completed then
+            local deliveryType = _currentDelivery and _currentDelivery.type == "travel" and "Cayo Perico delivery" or "Delivery route"
+            plsr.Notification:Success(string.format("%s Complete! Total Payment: $%s", deliveryType, result.payment))
+            _currentDelivery = nil
         else
-            exports["pulsar-hud"]:Notification("error", "Failed to start travel delivery")
+            local repMsg = result.repGain and string.format(" | Rep +%d", result.repGain) or ""
+            plsr.Notification:Info(string.format("Stop %d Complete! Moving To Next Stop...%s", stopIndex, repMsg))
+            Wait(2000)
+            TriggerEvent("Drugs:Client:Moonshine:GoToStop", result.nextStop)
         end
     end)
 end)

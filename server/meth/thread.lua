@@ -10,8 +10,7 @@ AddEventHandler("Drugs:Server:StartCookThreads", function()
             for k, v in pairs(_inProgCooks) do
                 if os.time() > v.end_time then
                     _placedTables[k].pickupReady = true
-                    exports['pulsar-core']:LoggerInfo("Drugs:Meth",
-                        string.format("Cook For Table %s Is Ready For Pickup", k))
+                    plsr.Logger:Info("Drugs:Meth", string.format("Cook For Table %s Is Ready For Pickup", k))
                     TriggerClientEvent("Drugs:Client:Meth:UpdateTableData", -1, k, _placedTables[k])
                     _inProgCooks[k] = nil
                 end

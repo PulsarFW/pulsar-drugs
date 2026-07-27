@@ -1,7 +1,7 @@
 AddEventHandler("Drugs:Client:Startup", function()
-    exports["pulsar-core"]:RegisterClientCallback("Drugs:Coke:Use", function(data, cb)
+    plsr.Callbacks:RegisterClientCallback("Drugs:Coke:Use", function(data, cb)
         Wait(400)
-        exports['pulsar-games']:MinigamePlayRoundSkillbar(1.0, 6, {
+        plsr.Minigame.Play:RoundSkillbar(1.0, 6, {
             onSuccess = function()
                 cb(true)
             end,

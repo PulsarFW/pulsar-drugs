@@ -6,12 +6,18 @@
 
 # PULSAR-DRUGS
 
-### Drug manufacturing — coke, meth, moonshine, and addiction
+### Drug production — coke, meth, and moonshine, each its own cook cycle, plus addiction tracking
 
 <br/>
 
 ![Lua](https://img.shields.io/badge/Lua_5.4-2C2D72?style=flat-square&logo=lua&logoColor=white)
 ![FiveM](https://img.shields.io/badge/FiveM-F40552?style=flat-square)
+
+<br/>
+
+<sub>Enjoy the framework? A coffee helps keep active development, hardening, and support going.</sub>
+
+<a href="https://buymeacoffee.com/pulsarframework"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 180px !important;" /></a>
 
 <br/>
 
@@ -23,15 +29,15 @@
 
 ## Overview
 
-Drug manufacturing system for Pulsar Framework. Covers cocaine, meth, and moonshine production chains with configurable steps, timed server-side threads, drug effects, and an addiction system.
+Registers `plsr.Drugs`. Coke, meth, and moonshine each get their own client/server/thread trio and config — placed tables/stills/barrels processed over time. `server/shared/addiction.lua` tracks addiction as a separate, shared mechanic across all three.
 
 ---
 
 ## Dependencies
 
-- `pulsar-core` — framework core
-- `ox_inventory` — drug item handling
-- `ox_lib` — progress bars, notify
+- `pulsar_core` — framework core
+- `pulsar_inventory` — placement/removal of the physical table/still/barrel items, and the produced drugs
+- `pulsar_pwnzor` — anti-cheat check loaded alongside every resource
 
 ---
 

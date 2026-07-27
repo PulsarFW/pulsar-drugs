@@ -1,13 +1,13 @@
 function hasValue(tbl, value)
-    for k, v in ipairs(tbl) do
-        if v == value or (type(v) == "table" and hasValue(v, value)) then
-            return true
-        end
-    end
-    return false
+	for k, v in ipairs(tbl) do
+		if v == value or (type(v) == "table" and hasValue(v, value)) then
+			return true
+		end
+	end
+	return false
 end
 
-local function getPluralForm(type, amount)
+local function dumbFuckingShitCuntFucker(type, amount)
     if amount ~= 1 then
         return type .. 's'
     end
@@ -26,21 +26,20 @@ function GetFormattedTimeFromSeconds(seconds)
     if days > 0 or hours > 0 then
         if days > 1 then
             if hours > 0 then
-                timeString = string.format('%d %s and %d %s', days, getPluralForm('day', days), hours,
-                    getPluralForm('hour', hours))
+                timeString = string.format('%d %s and %d %s', days, dumbFuckingShitCuntFucker('day', days), hours, dumbFuckingShitCuntFucker('hour', hours))
             else
-                timeString = string.format('%d %s', days, getPluralForm('day', days))
+                timeString = string.format('%d %s', days, dumbFuckingShitCuntFucker('day', days))
             end
         else
-            timeString = string.format('%d %s', hours, getPluralForm('hour', hours))
+            timeString = string.format('%d %s', hours, dumbFuckingShitCuntFucker('hour', hours))
         end
     else
         local minutes = math.ceil(seconds / 60)
-        if minutes <= 0 then
-            minutes = 1
-        end
+		if minutes <= 0 then
+			minutes = 1
+		end
 
-        timeString = string.format('%d %s', minutes, getPluralForm('minute', minutes))
+        timeString = string.format('%d %s', minutes, dumbFuckingShitCuntFucker('minute', minutes))
     end
     return timeString
 end

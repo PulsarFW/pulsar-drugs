@@ -1,21 +1,31 @@
-fx_version("cerulean")
-games({ "gta5" })
-lua54("yes")
-version '1.0.5'
+fx_version 'cerulean'
+games({ 'gta5' })
 
-client_script("@pulsar-core/exports/cl_error.lua")
-client_script("@pulsar-pwnzor/client/check.lua")
+name 'Pulsar Drugs'
+description 'Drug production: coke, meth, and moonshine'
+author 'Artmines - maintained for Pulsar Framework'
+url 'https://pulsarframe.work'
+version 'v1.0.0'
+
+version_check 'yes'
+github 'https://github.com/PulsarFW/pulsar_drugs'
+
+client_script '@pulsar_core/components/cl_error.lua'
+shared_script '@pulsar_core/core/sh_pulsar.lua'
+client_script '@pulsar_pwnzor/client/check.lua'
+server_script '@oxmysql/lib/MySQL.lua'
+
+shared_scripts({
+	'shared/**/*.lua',
+})
 
 client_scripts({
-  "@pulsar-damage/shared/weapons.lua",
-  "client/**/*.lua",
+	'@pulsar_damage/shared/weapons.lua',
+	'client/**/*.lua',
 })
 
 server_scripts({
-  "@oxmysql/lib/MySQL.lua",
-  "server/**/*.lua",
+	'server/**/*.lua',
 })
 
-shared_scripts({
-  "shared/**/*.lua",
-})
+lua54 'yes'

@@ -1,5 +1,5 @@
 function RunDegenThread()
-	for k, v in pairs(exports['pulsar-characters']:FetchAllCharacters()) do
+	for k, v in pairs(plsr.Fetch:AllCharacters()) do
 		if v ~= nil then
 			local addictions = v:GetData("Addiction")
 			if addictions ~= nil then
@@ -22,60 +22,56 @@ end
 
 function DoAlert(source, drug, previous, factor)
 	if factor > 10.0 and previous <= 10.0 then
-		exports['pulsar-hud']:Notification(source, "info",
-			string.format("You're Incredibly Addicted To %s", drug))
+		plsr.Execute:Client(source, "Notification", "Info", string.format("You're Incredibly Addicted To %s", drug))
 	elseif factor > 5.0 and (previous <= 5.0 or previous > 10.0) then
-		exports['pulsar-hud']:Notification(source, "info",
-			string.format("You're Very Addicted To %s", drug))
+		plsr.Execute:Client(source, "Notification", "Info", string.format("You're Very Addicted To %s", drug))
 	elseif factor > 0.0 and (previous <= 0.0) then
-		exports['pulsar-hud']:Notification(source, "info",
-			string.format("You're Somewhat Addicted To %s", drug))
+		plsr.Execute:Client(source, "Notification", "Info", string.format("You're Somewhat Addicted To %s", drug))
 	elseif factor <= 0.0 and (previous > 0.0) then
-		exports['pulsar-hud']:Notification(source, "info",
-			string.format("You're No Longer Addicted To %s", drug))
+		plsr.Execute:Client(source, "Notification", "Info", string.format("You're No Longer Addicted To %s", drug))
 	end
 end
 
-exports('AddictionAdd', function(source, drug, factor)
-	local char = exports['pulsar-characters']:FetchCharacterSource(source)
-	if char ~= nil then
-		local addictions = char:GetData("Addiction")
-		addictions[drug] = {
-			LastUse = os.time(),
-			Factor = addictions[drug].Factor + (factor or 1.0),
-		}
-		DoAlert(source, drug, addictions[drug].Factor - (factor or 1.0), addictions[drug].Factor)
-		char:SetData("Addiction", addictions)
-	end
-end)
-
-exports('AddictionRemove', function(source, drug, factor)
-	local char = exports['pulsar-characters']:FetchCharacterSource(source)
-	if char ~= nil then
-		local addictions = char:GetData("Addiction")
-		addictions[drug] = {
-			LastUse = os.time(),
-			Factor = addictions[drug].Factor - (factor or 1.0),
-		}
-
-		if addictions[drug].Factor < 0 then
-			addictions[drug].Factor = 0
+_DRUGS.Addiction = {
+	Add = function(self, source, drug, factor)
+        local char = plsr.Fetch:CharacterSource(source)
+        if char ~= nil then
+			local addictions = char:GetData("Addiction")
+			addictions[drug] = {
+				LastUse = os.time(),
+				Factor = addictions[drug].Factor + (factor or 1.0),
+			}
+			DoAlert(source, drug, addictions[drug].Factor - (factor or 1.0), addictions[drug].Factor)
+			char:SetData("Addiction", addictions)
 		end
+	end,
+	Remove = function(self, source, drug, factor)
+        local char = plsr.Fetch:CharacterSource(source)
+        if char ~= nil then
+			local addictions = char:GetData("Addiction")
+			addictions[drug] = {
+				LastUse = os.time(),
+				Factor = addictions[drug].Factor - (factor or 1.0),
+			}
 
-		DoAlert(source, drug, addictions[drug].Factor - (factor or 1.0), addictions[drug].Factor)
-		char:SetData("Addiction", addictions)
-	end
-end)
+			if addictions[drug].Factor < 0 then
+				addictions[drug].Factor = 0
+			end
 
-exports('AddictionReset', function(source, drug)
-	local char = exports['pulsar-characters']:FetchCharacterSource(source)
-	if char ~= nil then
-		local addictions = char:GetData("Addiction")
-		addictions[drug] = {
-			LastUse = false,
-			Factor = 0,
-		}
-		DoAlert(source, drug, addictions[drug].Factor)
-		char:SetData("Addiction", addictions)
-	end
-end)
+			DoAlert(source, drug, addictions[drug].Factor - (factor or 1.0), addictions[drug].Factor)
+			char:SetData("Addiction", addictions)
+		end
+	end,
+	Reset = function(self, source, drug)
+        local char = plsr.Fetch:CharacterSource(source)
+        if char ~= nil then
+			local addictions = char:GetData("Addiction")
+			addictions[drug] = {
+				LastUse = false,
+				Factor = 0,
+			}
+			DoAlert(source, drug, addictions[drug].Factor)
+			char:SetData("Addiction", addictions)
+		end
+	end,
+}

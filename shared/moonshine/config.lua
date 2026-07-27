@@ -1,9 +1,7 @@
--- Development Mode Configuration
--- Dev mode is automatically enabled when sv_environment is set to "DEV"
--- You can also manually enable it by setting _devMode = true
-_devMode = false -- Set to true to force dev mode (overrides environment check)
-_devCookTime = 30 -- Cook time in seconds when dev mode is enabled (default: 30 seconds)
-_devAgingTime = 30 -- Barrel aging time in seconds when dev mode is enabled (default: 30 seconds)
+-- Dev/testing shortcuts - active whenever the server isn't in production (GlobalState.IsProduction,
+-- set from the real sv_environment convar). Not a separate toggle to remember to flip.
+_devCookTime = 30 -- seconds, replaces the real per-tier cookTime below
+_devAgingTime = 30 -- seconds, replaces the real 2-day barrel aging time
 
 -- Still Tiers Configuration
 _stillTiers = {
@@ -92,7 +90,7 @@ _moonshineRecipes = {
         description = "Premium peach-infused moonshine",
         ingredients = {
             { item = "corn", amount = 5 },
-            { item = "peach", amount = 8 },
+            { item = "peach_juice", amount = 8 },
             { item = "sugar", amount = 5 },
             { item = "water", amount = 2 },
         },
@@ -195,22 +193,26 @@ _weatherEffects = {
 }
 
 -- Reputation System
+-- plsr.Reputation:GetLevel returns a rank INDEX (0 = below the first tier, up to #levels once
+-- maxed), not the raw point total - so every threshold below is a rank index against the 6-tier
+-- table registered in server/moonshine/main.lua (Novice/Apprentice/Journeyman/Expert/Master/
+-- Grandmaster), not a point value.
 _reputationSystem = {
     repPerBrew = 2, -- Reputation gained per successful brew
     repPerDelivery = 10, -- Reputation gained per delivery
     repLossOnRaid = 20, -- Reputation lost if raided
     unlockRecipes = {
-        classic = 0,
-        apple = 500,
-        peach = 1500,
-        cherry = 3000,
-        premium = 5000,
+        classic = 0, -- always available
+        apple = 1, -- Novice
+        peach = 2, -- Apprentice
+        cherry = 3, -- Journeyman
+        premium = 4, -- Expert
     }
 }
 
 -- Delivery System
 _deliverySystem = {
-    minRep = 100, -- Minimum reputation to unlock deliveries
+    minRep = 1, -- Novice - minimum reputation rank to unlock deliveries
     basePayPerJar = 50, -- Base payment per jar (realistic economy)
     payPerQualityPerJar = 1, -- Additional pay per quality point per jar
     minJarsPerStop = 1, -- Minimum jars to sell per stop
@@ -219,13 +221,14 @@ _deliverySystem = {
     maxStops = 6, -- Maximum number of stops per delivery
     deliveryTimeLimit = 60 * 20, -- 20 minutes to complete entire delivery route
     policeChance = 0.10, -- 10% chance of police encounter
-    bulkSaleRep = 500, -- Reputation required for bulk sale option
+    bulkSaleRep = 2, -- Apprentice - reputation rank required for bulk sale option
     bulkSaleMultiplier = 0.60, -- Only pay 60% of normal price (lazy way)
-    travelRep = 2000, -- Reputation required for travel option
+    travelRep = 4, -- Expert - reputation rank required for travel option
     travelBasePayPerJar = 150, -- Base payment per jar for Cayo Perico delivery (higher than drop-off)
     travelPayPerQualityPerJar = 3, -- Additional pay per quality point per jar for travel
     travelRepPerStop = 8, -- Reputation per stop (random between travelRepPerStop-10)
     travelRepPerStopMax = 10, -- Max reputation per stop
+    travelRepBonus = 20, -- Bonus reputation for completing a full travel delivery
     travelMinStops = 4, -- Minimum number of stops on Cayo Perico
     travelMaxStops = 7, -- Maximum number of stops on Cayo Perico
     travelTime = 60 * 30, -- 30 minutes to complete travel delivery (longer due to island travel)
@@ -243,10 +246,10 @@ _agingSystem = {
 _upgradeSystem = {
     upgradeTime = 60 * 5, -- 5 minutes to upgrade
     upgradeCostMultiplier = 1.5, -- Cost multiplier per tier
-    requireRep = {
+    requireRep = { -- reputation rank index required, see _reputationSystem note above
         [2] = 0,
-        [3] = 1000,
-        [4] = 3000,
+        [3] = 2, -- Apprentice
+        [4] = 4, -- Expert
     }
 }
 

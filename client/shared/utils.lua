@@ -1,3 +1,4 @@
+
 function loadModel(model)
 	while not HasModelLoaded(model) do
 		RequestModel(model)
@@ -6,10 +7,10 @@ function loadModel(model)
 end
 
 function loadAnim(dict)
-	while not HasAnimDictLoaded(dict) do
-		RequestAnimDict(dict)
-		Wait(10)
-	end
+    while not HasAnimDictLoaded(dict) do
+        RequestAnimDict(dict)
+        Wait(10)
+    end
 end
 
 function hasValue(tbl, value)
