@@ -181,12 +181,12 @@ end)
 AddEventHandler("Damage:Client:Triggers:EntityDamaged", function(victim, attacker, pWeapon, isMelee)
     if victim ~= PlayerPedId() then return end
 
-	if _armorTime > 0 and not Config.Weapons[pWeapon]?.isMinor then
+	if _armorTime > 0 and not Config.Weapons[pWeapon]?.minor then
 		_armorTime = 0
 		plsr.Buffs:RemoveBuffType("armor")
 	end
 
-	if _healTime > 0 and not Config.Weapons[pWeapon]?.isMinor then
+	if _healTime > 0 and not Config.Weapons[pWeapon]?.minor then
 		_healTime = 0
 		plsr.Buffs:RemoveBuffType("heal")
 	end

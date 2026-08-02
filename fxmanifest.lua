@@ -20,7 +20,7 @@ shared_scripts({
 })
 
 client_scripts({
-	'@pulsar_damage/shared/weapons.lua',
+	'@pulsar_damage/data/weapons.lua',
 	'client/**/*.lua',
 })
 

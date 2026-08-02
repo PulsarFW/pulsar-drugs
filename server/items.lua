@@ -5,19 +5,19 @@ _effectCds = {
 }
 
 function RegisterItemUse()
-	plsr.Inventory.Items:RegisterUse("meth_table", "DrugShit", function(source, slot, itemData)
+	plsr.Inventory.Items:RegisterUse("meth_table", "Drugs", function(source, slot, itemData)
 		plsr.Callbacks:ClientCallback(source, "Drugs:Meth:PlaceTable", slot.id, function() end)
 	end)
 
-	plsr.Inventory.Items:RegisterUse("moonshine_still", "DrugShit", function(source, slot, itemData)
+	plsr.Inventory.Items:RegisterUse("moonshine_still", "Drugs", function(source, slot, itemData)
 		plsr.Callbacks:ClientCallback(source, "Drugs:Moonshine:PlaceStill", slot.id, function() end)
 	end)
 
-	plsr.Inventory.Items:RegisterUse("moonshine_barrel", "DrugShit", function(source, slot, itemData)
+	plsr.Inventory.Items:RegisterUse("moonshine_barrel", "Drugs", function(source, slot, itemData)
 		plsr.Callbacks:ClientCallback(source, "Drugs:Moonshine:PlaceBarrel", slot.id, function() end)
 	end)
 
-	plsr.Inventory.Items:RegisterUse("adrenaline", "DrugShit", function(source, slot, itemData)
+	plsr.Inventory.Items:RegisterUse("adrenaline", "Drugs", function(source, slot, itemData)
 		local char = plsr.Fetch:CharacterSource(source)
 		if char ~= nil then
 			if _effectCds.adrenaline[char:GetData("SID")] == nil or os.time() > _effectCds.adrenaline[char:GetData("SID")] then
@@ -35,7 +35,7 @@ function RegisterItemUse()
 		end
 	end)
 
-	plsr.Inventory.Items:RegisterUse("meth_pipe", "DrugShit", function(source, slot, itemData)
+	plsr.Inventory.Items:RegisterUse("meth_pipe", "Drugs", function(source, slot, itemData)
 		local char = plsr.Fetch:CharacterSource(source)
 		if char ~= nil then
 			if _effectCds.meth[char:GetData("SID")] == nil or os.time() > _effectCds.meth[char:GetData("SID")] then
@@ -65,7 +65,7 @@ function RegisterItemUse()
 		end
 	end)
 
-	plsr.Inventory.Items:RegisterUse("meth_brick", "DrugShit", function(source, slot, itemData)
+	plsr.Inventory.Items:RegisterUse("meth_brick", "Drugs", function(source, slot, itemData)
 		local char = plsr.Fetch:CharacterSource(source)
 		if os.time() >= slot.MetaData.Finished then
 			if plsr.Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
@@ -89,7 +89,7 @@ function RegisterItemUse()
 		end
 	end)
 
-	-- plsr.Inventory.Items:RegisterUse("meth_bag", "DrugShit", function(source, slot, itemData)
+	-- plsr.Inventory.Items:RegisterUse("meth_bag", "Drugs", function(source, slot, itemData)
 	-- 	local plyr = plsr.Fetch:Source(source)
 	-- 	if plyr ~= nil then
 	-- 		local char = plyr:GetData("Character")
@@ -111,7 +111,7 @@ function RegisterItemUse()
 	-- 	end
 	-- end)
 
-	plsr.Inventory.Items:RegisterUse("coke_brick", "DrugShit", function(source, slot, itemData)
+	plsr.Inventory.Items:RegisterUse("coke_brick", "Drugs", function(source, slot, itemData)
 		local char = plsr.Fetch:CharacterSource(source)
 		if plsr.Inventory.Items:RemoveSlot(slot.Owner, slot.Name, 1, slot.Slot, slot.invType) then
 			plsr.Inventory:AddItem(
@@ -131,7 +131,7 @@ function RegisterItemUse()
 		end
 	end)
 
-	plsr.Inventory.Items:RegisterUse("coke_bag", "DrugShit", function(source, slot, itemData)
+	plsr.Inventory.Items:RegisterUse("coke_bag", "Drugs", function(source, slot, itemData)
 		local char = plsr.Fetch:CharacterSource(source)
 		if char ~= nil then
 			if _effectCds.coke[char:GetData("SID")] == nil or os.time() > _effectCds.coke[char:GetData("SID")] then
@@ -150,7 +150,7 @@ function RegisterItemUse()
 		end
 	end)
 
-	plsr.Inventory.Items:RegisterUse("moonshine", "DrugShit", function(source, slot, itemData)
+	plsr.Inventory.Items:RegisterUse("moonshine", "Drugs", function(source, slot, itemData)
 		local char = plsr.Fetch:CharacterSource(source)
 		if char ~= nil then
 			if _effectCds.coke[char:GetData("SID")] == nil or os.time() > _effectCds.coke[char:GetData("SID")] then

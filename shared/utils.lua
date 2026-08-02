@@ -7,7 +7,7 @@ function hasValue(tbl, value)
 	return false
 end
 
-local function dumbFuckingShitCuntFucker(type, amount)
+local function Pluralize(type, amount)
     if amount ~= 1 then
         return type .. 's'
     end
@@ -26,12 +26,12 @@ function GetFormattedTimeFromSeconds(seconds)
     if days > 0 or hours > 0 then
         if days > 1 then
             if hours > 0 then
-                timeString = string.format('%d %s and %d %s', days, dumbFuckingShitCuntFucker('day', days), hours, dumbFuckingShitCuntFucker('hour', hours))
+                timeString = string.format('%d %s and %d %s', days, Pluralize('day', days), hours, Pluralize('hour', hours))
             else
-                timeString = string.format('%d %s', days, dumbFuckingShitCuntFucker('day', days))
+                timeString = string.format('%d %s', days, Pluralize('day', days))
             end
         else
-            timeString = string.format('%d %s', hours, dumbFuckingShitCuntFucker('hour', hours))
+            timeString = string.format('%d %s', hours, Pluralize('hour', hours))
         end
     else
         local minutes = math.ceil(seconds / 60)
@@ -39,7 +39,7 @@ function GetFormattedTimeFromSeconds(seconds)
 			minutes = 1
 		end
 
-        timeString = string.format('%d %s', minutes, dumbFuckingShitCuntFucker('minute', minutes))
+        timeString = string.format('%d %s', minutes, Pluralize('minute', minutes))
     end
     return timeString
 end
